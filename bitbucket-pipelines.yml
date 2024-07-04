@@ -1,7 +1,5 @@
 image: ubuntu:latest
 
-
-
 pipelines:
   default:
     - step:
@@ -13,7 +11,7 @@ pipelines:
           - apt-get install -y nodejs
           - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           - unzip awscliv2.zip
-          - sudo ./aws/install
+          - sudo./aws/install
    
           - npm install
           - npm run build
@@ -23,9 +21,8 @@ pipelines:
           
 
           - aws codeartifact create-repository --domain codeartifact-task --repository my-app
-          - aws codeartifact publish-package-version --domain codeartifact-task --repository my-app --package my-app --package-version 1.0.0 --format zip --asset-name artifact.gz --asset-sha256 $(sha256sum /home/einfochips/Documents/artifact.gz | cut -d' 'f1) --asset-content file:///home/einfochips/Documents/artifact.gz
           - aws codeartifact upload --domain codeartifact-task --domain-owner 454143665149 --repository my-app --package my-app --version 1.0.0 --file build/*
         artifacts:
-              paths:
-                - build/**
+          paths:
+            - build/**
         deployment: codeartifact
