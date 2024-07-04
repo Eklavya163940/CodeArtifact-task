@@ -1,3 +1,5 @@
+image: ubuntu:latest
+
 pipelines:
   default:
     - step:
@@ -5,19 +7,20 @@ pipelines:
         script:
           - apt-get update
           - apt-get install -y curl unzip sudo
-          - curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash -
-          - sudo apt-get install -y nodejs
+          - curl -sL https://deb.nodesource.com/setup_18.x | bash -
+          - apt-get install -y nodejs
           - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           - unzip awscliv2.zip
           - sudo ./aws/install
-   
+          
           - npm install
           - npm run build
-          - aws configure set default.region ap-south-1
-          - AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain codeartifact-task --output text --query authorizationToken)
-          - npm config set registry https://codeartifact-dkm.ecr.ap-south-1.amazonaws.com
           
+          - aws configure set default.region ap-south-1
+          - export AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain codeartifact-task --output text --query authorizationToken)
+          - npm config set registry https://codeartifact-task-454143665149.d.codeartifact.ap-south-1.amazonaws.com/npm/my-app/
 
-          - aws codeartifact create-repository --domain codeartifact-task --repository my-app
-          - aws codeartifact upload --domain codeartifact-task --domain-owner 454143665149 --repository my-app --package my-app --version 1.0.0 --file build/*
-        deployment: codeartifact
+          - npm publish
+        artifacts:
+          paths:
+            - build/*
