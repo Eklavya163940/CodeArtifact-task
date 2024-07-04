@@ -23,7 +23,7 @@ pipelines:
           
 
           - aws codeartifact create-repository --domain codeartifact-task --repository my-app
-          - aws codeartifact publish-package-version --domain codeartifact-task --repository my-app --package my-app --package-version 1.0.0 --format zip --asset-content file:///home/einfochips/Documents/artifact.gz
+          - aws codeartifact publish-package-version --domain codeartifact-task --repository my-app --package my-app --package-version 1.0.0 --format zip --asset-name artifact.gz --asset-sha256 $(sha256sum /home/einfochips/Documents/artifact.gz | cut -d' 'f1) --asset-content file:///home/einfochips/Documents/artifact.gz
           - aws codeartifact upload --domain codeartifact-task --domain-owner 454143665149 --repository my-app --package my-app --version 1.0.0 --file build/*
         artifacts:
               paths:
