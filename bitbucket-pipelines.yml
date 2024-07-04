@@ -21,8 +21,8 @@ pipelines:
           
 
           - aws codeartifact create-repository --domain codeartifact-task --repository my-app
-          - aws codeartifact upload --domain codeartifact-task --domain-owner 454143665149 --repository my-app --package my-app --version 1.0.0 --file build/*
+          - aws codeartifact upload --domain codeartifact-task --domain-owner 454143665149 --repository my-app --package my-app --version 1.0.0 --file Task/*
         artifacts:
           paths:
-            - build/*
+            - Task/*
         deployment: codeartifact
