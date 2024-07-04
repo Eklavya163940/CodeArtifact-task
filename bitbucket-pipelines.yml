@@ -1,0 +1,33 @@
+image: ubuntu:latest
+
+
+
+pipelines:
+  default:
+    - step:
+        name: Install dependencies and AWS CLI
+        script:
+          - apt-get update
+          - apt-get install -y curl unzip sudo
+          - curl -sL https://deb.nodesource.com/setup_18.x | bash -
+          - apt-get install -y nodejs
+          - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          - unzip awscliv2.zip
+          - sudo ./aws/install
+   
+          - npm install
+          - npm run build
+          - aws configure set default.region ap-south-1
+          - AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain codeartifact-task --output text --query authorizationToken)
+          - npm config set registry https://codeartifact-dkm.ecr.ap-south-1.amazonaws.com
+          
+
+          - aws codeartifact create-repository --domain codeartifact-task --repository my-app
+          - aws codeartifact put-package-versions --domain coderartifact-task --repository my-app --package my-app --versions 1.0.0
+          - aws codeartifact upload --domain codeartifact-task --repository my-app --package my-app --version 1.0.0 --file build/index.html
+          - aws codeartifact upload --domain codeartifact-task --repository my-app --package my-app --version 1.0.0 --file build/static/js/main.js
+          - aws codeartifact upload --domain codeartifact-task --repository my-app --package my-app --version 1.0.0 --file build/static/css/main.css
+        artifacts:
+              paths:
+                - build/**
+        deployment: codeartifact
