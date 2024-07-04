@@ -17,9 +17,8 @@ pipelines:
           - npm run build
           
           - aws configure set default.region ap-south-1
-          - export AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain codeartifact-task --output text --query authorizationToken)
-          - npm config set registry https://codeartifact-task-454143665149.d.codeartifact.ap-south-1.amazonaws.com/npm/my-app/
-
+          - aws codeartifact login --tool npm --domain codeartifact-task --domain-owner 454143665149 --repository my-app
+          
           - npm publish
         artifacts:
           paths:
