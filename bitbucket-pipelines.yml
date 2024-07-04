@@ -1,5 +1,3 @@
-image: ubuntu:latest
-
 pipelines:
   default:
     - step:
@@ -15,14 +13,16 @@ pipelines:
    
           - npm install
           - npm run build
+          - mkdir build
+          - cp index.html build/  # copy the artifact to the build directory
           - aws configure set default.region ap-south-1
           - AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain codeartifact-task --output text --query authorizationToken)
           - npm config set registry https://codeartifact-dkm.ecr.ap-south-1.amazonaws.com
           
 
           - aws codeartifact create-repository --domain codeartifact-task --repository my-app
-          - aws codeartifact upload --domain codeartifact-task --domain-owner 454143665149 --repository my-app --package my-app --version 1.0.0 --file Task/*
+          - aws codeartifact upload --domain codeartifact-task --domain-owner 454143665149 --repository my-app --package my-app --version 1.0.0 --file build/*
         artifacts:
           paths:
-            - Task/*
+            - build/*  # store the artifact in the build directory
         deployment: codeartifact
