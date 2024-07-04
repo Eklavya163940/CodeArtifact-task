@@ -23,7 +23,7 @@ pipelines:
           
 
           - aws codeartifact create-repository --domain codeartifact-task --repository my-app
-          - aws codeartifact upload-package-version --domain codeartifact-task --repository my-app --package my-app --package-version $PACKAGE_VERSION --zip-file /./build/
+          - aws codeartifact publish-package-version --domain codeartifact-task --repository my-app --package my-app --package-version 1.0.0 --zip-file /home/einfochips/Documents/artifact.gz
           - aws codeartifact upload --domain codeartifact-task --repository my-app --package my-app --version 1.0.0 --file build/index.html
           - aws codeartifact upload --domain codeartifact-task --repository my-app --package my-app --version 1.0.0 --file build/static/js/main.js
           - aws codeartifact upload --domain codeartifact-task --repository my-app --package my-app --version 1.0.0 --file build/static/css/main.css
