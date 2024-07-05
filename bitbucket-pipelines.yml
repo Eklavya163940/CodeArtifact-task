@@ -17,13 +17,6 @@ pipelines:
           - npm run build
           
           - aws configure set default.region ap-south-1
-          - export CODEARTIFACT_DOMAIN="codeartifact-task"
-          - export REACT_APP_NAME="my-app"
-          
-          
-          - REPO_EXISTS=$(aws codeartifact list-repositories --domain codeartifact-task --query "repositories[?repositoryName=='my-app'] | length(@)" --output text)
-          - if [ "$REPO_EXISTS" -eq "0" ]; then aws codeartifact create-repository --domain codeartifact-task --domain-owner 454143665149 --repository my-app; fi
-          
           - aws codeartifact login --tool npm --domain codeartifact-task --domain-owner 454143665149 --repository my-app
           - npm version patch
           - npm publish
