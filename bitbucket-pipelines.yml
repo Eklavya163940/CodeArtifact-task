@@ -17,6 +17,8 @@ pipelines:
           - npm run build
           
           - aws configure set default.region ap-south-1
+          - export CODEARTIFACT_DOMAIN="codeartifact-task"
+          - export REACT_APP_NAME="my-app"
           
           
           - REPO_EXISTS=$(aws codeartifact list-repositories --domain codeartifact-task --query "repositories[?repositoryName=='my-app'] | length(@)" --output text)
