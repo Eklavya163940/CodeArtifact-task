@@ -18,7 +18,7 @@ pipelines:
           
           - aws configure set default.region ap-south-1
           - aws codeartifact login --tool npm --domain codeartifact-task --domain-owner 454143665149 --repository my-app
-          - npm version patch
+          - npm version patch major
           - npm publish
         artifacts:
           paths:
