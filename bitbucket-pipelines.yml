@@ -6,7 +6,7 @@ pipelines:
         name: Install dependencies and AWS CLI
         script:
           - apt-get update
-          - apt-get install -y curl unzip sudo
+          - apt-get install -y curl unzip sudo jq
           - curl -sL https://deb.nodesource.com/setup_18.x | bash -
           - apt-get install -y nodejs
           - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -17,8 +17,11 @@ pipelines:
           - npm run build
           
           - aws configure set default.region ap-south-1
+          
+          
           - REPO_EXISTS=$(aws codeartifact list-repositories --domain codeartifact-task --query "repositories[?repositoryName=='my-app'] | length(@)" --output text)
           - if [ "$REPO_EXISTS" -eq "0" ]; then aws codeartifact create-repository --domain codeartifact-task --domain-owner 454143665149 --repository my-app; fi
+          
           - aws codeartifact login --tool npm --domain codeartifact-task --domain-owner 454143665149 --repository my-app
           - npm version patch
           - npm publish
